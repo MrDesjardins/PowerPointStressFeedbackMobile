@@ -1,73 +1,104 @@
 ﻿using System;
-using Android;
+using System.Linq;
 using Android.App;
-using Android.Content;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
-using Core;
+using Android.Widget;
+using Microsoft.Band.Portable;
+using Microsoft.Band.Portable.Sensors;
 
 namespace PowerPointStressFeedbackMobile
 {
     [Activity(Label = "Power Point Stress Feedback", MainLauncher = true, Icon = "@drawable/icon")]
     public class MainActivity : Activity
     {
-        int count = 1;
+        private BandClient bandClient;
+        private int count = 1;
+        private BandHeartRateSensor heartRate;
+        private EditText sessionId;
+        private Button startCaptureButton;
+        private Button stopCaptureButton;
+        private EditText txtLog;
 
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
 
             // Set our view from the "main" layout resource
-            SetContentView(Resource.Layout.Main);
+            this.SetContentView(Resource.Layout.Main);
 
             // Get our UI controls from the loaded layout:
-            EditText phoneNumberText = FindViewById<EditText>(Resource.Id.PhoneNumberText);
-            Button translateButton = FindViewById<Button>(Resource.Id.TranslateButton);
-            Button callButton = FindViewById<Button>(Resource.Id.CallButton);
 
-            // Disable the "Call" button
-            callButton.Enabled = false;
+            this.startCaptureButton = this.FindViewById<Button>(Resource.Id.StartCapture);
+            this.stopCaptureButton = this.FindViewById<Button>(Resource.Id.StopCapturing);
+            this.txtLog = this.FindViewById<EditText>(Resource.Id.TxtLog);
 
-            // Add code to translate number
-            string translatedNumber = string.Empty;
 
-            translateButton.Click += (object sender, EventArgs e) =>
+            this.startCaptureButton.Click += this.OnStartCaptureButtonOnClick;
+            this.stopCaptureButton.Click += this.OnStopCaptureButtonClick;
+
+            this.ConnectToBand();
+            //Wait to have a connection to Band
+            this.startCaptureButton.Enabled = false;
+            this.stopCaptureButton.Enabled = false;
+        }
+
+
+        private async void ConnectToBand()
+        {
+            var bandClientManager = BandClientManager.Instance;
+            // query the service for paired devices
+            var pairedBands = await bandClientManager.GetPairedBandsAsync();
+            // connect to the first device
+            var bandInfo = pairedBands.FirstOrDefault();
+            if (bandInfo != null)
             {
-                // Translate user's alphanumeric phone number to numeric
-                translatedNumber = PhonewordTranslator.ToNumber(phoneNumberText.Text);
-                if (String.IsNullOrWhiteSpace(translatedNumber))
-                {
-                    callButton.Text = "Call";
-                    callButton.Enabled = false;
-                }
-                else
-                {
-                    callButton.Text = "Call " + translatedNumber;
-                    callButton.Enabled = true;
-                }
-            };
-
-
-            callButton.Click += (object sender, EventArgs e) =>
+                this.bandClient = await bandClientManager.ConnectAsync(bandInfo);
+                this.startCaptureButton.Enabled = true;
+                this.stopCaptureButton.Enabled = true;
+            }
+            else
             {
-                // On "Call" button click, try to dial phone number.
-                var callDialog = new AlertDialog.Builder(this);
-                callDialog.SetMessage("Call " + translatedNumber + "?");
-                callDialog.SetNeutralButton("Call", delegate {
-                    // Create intent to dial phone
-                    var callIntent = new Intent(Intent.ActionCall);
-                    callIntent.SetData(Android.Net.Uri.Parse("tel:" + translatedNumber));
-                    StartActivity(callIntent);
-                });
-                callDialog.SetNegativeButton("Cancel", delegate { });
+                this.txtLog.Append("Cannot find paired Band");
+            }
+        }
 
-                // Show the alert dialog to the user and wait for response.
-                callDialog.Show();
-            };
 
+        private async void OnStartCaptureButtonOnClick(object sender, EventArgs e)
+        {
+            this.sessionId = this.FindViewById<EditText>(Resource.Id.SessionIdText);
+            this.sessionId.Enabled = false;
+            this.startCaptureButton.Enabled = false;
+            this.stopCaptureButton.Enabled = true;
+            var sensorManager = this.bandClient.SensorManager;
+            // get the heart rate sensor
+            this.heartRate = sensorManager.HeartRate;
+            // add a handler
+            this.heartRate.ReadingChanged += OnHeartRateOnReadingChanged            ;
+            if (this.heartRate.UserConsented == UserConsent.Unspecified)
+            {
+                var granted = await this.heartRate.RequestUserConsent();
+            }
+            if (this.heartRate.UserConsented == UserConsent.Granted)
+            {
+                // start reading, with the interval
+                await this.heartRate.StartReadingsAsync(BandSensorSampleRate.Ms16);
+            }
+        }
+
+        private void OnHeartRateOnReadingChanged(object o, BandSensorReadingEventArgs<BandHeartRateReading> args)
+        {
+            var quality = args.SensorReading.Quality;
+            var heartRate = args.SensorReading.HeartRate;
+            this.txtLog.Append(DateTime.Now + ": Heart rate: " + heartRate + "\n");
+        }
+
+        private async void OnStopCaptureButtonClick(object sender, EventArgs e)
+        {
+            this.sessionId.Enabled = true;
+            this.startCaptureButton.Enabled = true;
+            this.stopCaptureButton.Enabled = false;
+            // stop reading
+            await this.heartRate.StopReadingsAsync();
         }
     }
 }
-

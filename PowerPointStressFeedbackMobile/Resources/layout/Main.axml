@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <TextView
-        android:text="Enter a Phoneword:"
+        android:text="Session Id:"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -12,15 +12,20 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/PhoneNumberText" />
+        android:id="@+id/SessionIdText" />
     <Button
-        android:text="Translate"
+        android:text="Start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/TranslateButton" />
+        android:id="@+id/StartCapture" />
     <Button
-        android:text="Call"
+        android:text="Stop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/CallButton" />
+        android:id="@+id/StopCapturing" />
+    <EditText
+        android:inputType="textMultiLine"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/TxtLog" />
 </LinearLayout>

@@ -28,3 +28,7 @@ using Android.App;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+
+//Microsoft Band
+[assembly: UsesPermission(Android.Manifest.Permission.Bluetooth)]
+[assembly: UsesPermission(Microsoft.Band.BandClientManager.BindBandService)]
