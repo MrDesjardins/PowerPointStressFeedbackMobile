@@ -1,4 +1,5 @@
-﻿@model PowerPointStressFeedbackWeb.Controllers.MergedData
+﻿@using Newtonsoft.Json
+@model PowerPointStressFeedbackWeb.Controllers.MergedData
 
 @if (Model == null)
 {
@@ -7,5 +8,11 @@
 else
 {
     <h1>Data from session id : @Model.SessionId</h1>
+    <script>
+        @{
+            var data = JsonConvert.SerializeObject(Model.Data);
+        }
+        var data = @Html.Raw(data);
+    </script>
 }
 

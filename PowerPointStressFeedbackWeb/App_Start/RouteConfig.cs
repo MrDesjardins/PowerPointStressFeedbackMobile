@@ -16,7 +16,7 @@ namespace PowerPointStressFeedbackWeb
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{sessionId}",
-                defaults: new { controller = "StressFeedback", action = "Index", sessionId = UrlParameter.Optional }
+                defaults: new { controller = "StressFeedback", action = "Index", sessionId = "12345" }
             );
         }
     }

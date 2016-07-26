@@ -74,28 +74,18 @@ namespace PowerPointStressFeedbackAddIn
             if (this.isAddInRunning)
             {
                 System.Diagnostics.Debug.WriteLine(DateTime.Now + ":" + slideNumber);
-
                 using (var client = new HttpClient())
                 {
-                    //var values = new Dictionary<string, string>
-                    //{
-                    //   { "thing1", "hello" },
-                    //   { "thing2", "world" }
-                    //};
-
-                    //var content = new FormUrlEncodedContent(values);
                     var dateTime = DateTime.Now.ToString("yyyyDMMDdd_HHTmmTss"); //Special format see Web controller
-                    var url = this.url + "StressFeedback/PowerPointData/"+this.sessionId+"/"+dateTime+"/"+ slideNumber;
-                    var response = await client.PostAsync(url, null/*, content*/);
-                    //var responseString = await response.Content.ReadAsStringAsync();
+                    var url = $"{this.url}StressFeedback/PowerPointData/{this.sessionId}/{dateTime}/{slideNumber}/";
+                    await client.PostAsync(url, null);
                 }
-
             }
         }
 
         protected override Microsoft.Office.Core.IRibbonExtensibility CreateRibbonExtensibilityObject()
         {
-            return new PowerPointStressFeedbackRibbon(this.IsAddInRunningMethod, SessionIdChange, UrlChange);
+            return new PowerPointStressFeedbackRibbon(this.IsAddInRunningMethod, this.SessionIdChange, this.UrlChange);
         }
 
 

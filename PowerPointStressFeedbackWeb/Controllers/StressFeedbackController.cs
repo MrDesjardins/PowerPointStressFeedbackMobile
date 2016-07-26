@@ -4,6 +4,7 @@ using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Web.SessionState;
 
 
 namespace PowerPointStressFeedbackWeb.Controllers
@@ -13,6 +14,51 @@ namespace PowerPointStressFeedbackWeb.Controllers
 
         private static Dictionary<string, List<PowerPointData>> powerpointData = new Dictionary<string, List<PowerPointData>>();
         private static Dictionary<string, List<BandData>> bandData = new Dictionary<string, List<BandData>>();
+
+        /// <summary>
+        /// Test data for a fake session id
+        /// </summary>
+        static StressFeedbackController()
+        {
+            // Test session
+            var fakeSession = "12345";
+            var testBandData = new List<BandData>();
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 00), HeartBeat = 60, Temperature = 37.5d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 01), HeartBeat = 61, Temperature = 37.5d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 02), HeartBeat = 62, Temperature = 37.5d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 03), HeartBeat = 61, Temperature = 37.5d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 04), HeartBeat = 62, Temperature = 37.5d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 05), HeartBeat = 62, Temperature = 37.5d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 06), HeartBeat = 62, Temperature = 37.6d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 07), HeartBeat = 63, Temperature = 37.6d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 08), HeartBeat = 63, Temperature = 37.6d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 09), HeartBeat = 64, Temperature = 37.6d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 10), HeartBeat = 64, Temperature = 37.7d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 11), HeartBeat = 65, Temperature = 37.7d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 12), HeartBeat = 65, Temperature = 37.7d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 13), HeartBeat = 67, Temperature = 37.7d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 14), HeartBeat = 67, Temperature = 37.7d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 15), HeartBeat = 66, Temperature = 37.8d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 16), HeartBeat = 65, Temperature = 37.8d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 17), HeartBeat = 65, Temperature = 37.8d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 18), HeartBeat = 64, Temperature = 37.8d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 19), HeartBeat = 66, Temperature = 37.9d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 20), HeartBeat = 67, Temperature = 37.9d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 21), HeartBeat = 70, Temperature = 37.9d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 22), HeartBeat = 70, Temperature = 37.8d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 23), HeartBeat = 72, Temperature = 37.8d });
+            testBandData.Add(new BandData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 24), HeartBeat = 72, Temperature = 37.9d });
+
+            var testPowerpointData = new List<PowerPointData>();
+            testPowerpointData.Add(new PowerPointData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 03), SlideIndex = 0 });
+            testPowerpointData.Add(new PowerPointData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 07), SlideIndex = 1 });
+            testPowerpointData.Add(new PowerPointData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 10), SlideIndex = 2 });
+            testPowerpointData.Add(new PowerPointData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 15), SlideIndex = 3 });
+            testPowerpointData.Add(new PowerPointData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 20), SlideIndex = 4 });
+            testPowerpointData.Add(new PowerPointData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 24), SlideIndex = 5 });
+            powerpointData.Add(fakeSession, testPowerpointData);
+            bandData.Add(fakeSession, testBandData);
+        }
 
         [HttpGet]
         public ActionResult Index(string sessionId)
@@ -26,7 +72,7 @@ namespace PowerPointStressFeedbackWeb.Controllers
         }
 
         [HttpPost]
-        [Route("StressFeedback/PowerPointData/{sessionId}/{dateTime}/{slideIndex}")]
+        [Route("StressFeedback/PowerPointData/{sessionId}/{dateTime}/{slideIndex}/")]
         public ActionResult PowerPointData(string sessionId, string dateTime, int slideIndex)
         {
             var dateTime1 = tranformStringToDate(dateTime);
@@ -51,6 +97,7 @@ namespace PowerPointStressFeedbackWeb.Controllers
         }
 
         [HttpPost]
+        [Route("StressFeedback/BandData/{sessionId}/{dateTime}/{hearbeat}/{temperature:decimal}/")]
         public ActionResult BandData(string sessionId, string dateTime, int hearbeat, double temperature)
         {
             var dateTime1 = tranformStringToDate(dateTime);
@@ -100,16 +147,20 @@ namespace PowerPointStressFeedbackWeb.Controllers
                 item.SlideIndex = pointData.SlideIndex;
                 item.Time = pointData.DateTime;
                 var count = 0;
-                var sum = 0;
+                var sumHeartBeat = 0;
+                var sumTemperature = 0d;
                 while (indexBandData < bandData.Count && bandData[indexBandData].DateTime<pointData.DateTime)
                 {
                     count++;
                     var dd = bandData[indexBandData];
                     item.HeartBeatMinimum = dd.HeartBeat < item.HeartBeatMinimum ? dd.HeartBeat : item.HeartBeatMinimum;
                     item.HeartBeatMaximum = dd.HeartBeat > item.HeartBeatMaximum ? dd.HeartBeat : item.HeartBeatMaximum;
-                    sum += dd.HeartBeat;
+                    sumHeartBeat += dd.HeartBeat;
+                    sumTemperature += dd.Temperature;
+                    indexBandData++;
                 }
-                item.HeartBeatAverage = sum/count;
+                item.HeartBeatAverage = sumHeartBeat/count;
+                item.Temperature = sumTemperature/count;
                 mergedData.Data.Add(item);
             }
 
