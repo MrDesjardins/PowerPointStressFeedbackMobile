@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Xml.Linq;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
@@ -11,6 +12,8 @@ namespace PowerPointStressFeedbackAddIn
     public partial class PageMovementAddIn
     {
         private bool isAddInRunning = false;
+        private string sessionId;
+        private string url;
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
         {
@@ -30,6 +33,16 @@ namespace PowerPointStressFeedbackAddIn
         private void IsAddInRunningMethod(bool isRunning)
         {
             this.isAddInRunning = isRunning;
+        }
+
+        private void SessionIdChange(string sessionId)
+        {
+            this.sessionId = sessionId;
+        }
+
+        private void UrlChange(string url)
+        {
+            this.url = url;
         }
 
         private void OnSlidePrevious(PowerPoint.SlideShowWindow wn)
@@ -56,17 +69,33 @@ namespace PowerPointStressFeedbackAddIn
         }
 
 
-        private void SendData(int slideNumber)
+        private async void SendData(int slideNumber)
         {
             if (this.isAddInRunning)
             {
                 System.Diagnostics.Debug.WriteLine(DateTime.Now + ":" + slideNumber);
+
+                using (var client = new HttpClient())
+                {
+                    //var values = new Dictionary<string, string>
+                    //{
+                    //   { "thing1", "hello" },
+                    //   { "thing2", "world" }
+                    //};
+
+                    //var content = new FormUrlEncodedContent(values);
+                    var dateTime = DateTime.Now.ToString("yyyyDMMDdd_HHTmmTss"); //Special format see Web controller
+                    var url = this.url + "StressFeedback/PowerPointData/"+this.sessionId+"/"+dateTime+"/"+ slideNumber;
+                    var response = await client.PostAsync(url, null/*, content*/);
+                    //var responseString = await response.Content.ReadAsStringAsync();
+                }
+
             }
         }
 
         protected override Microsoft.Office.Core.IRibbonExtensibility CreateRibbonExtensibilityObject()
         {
-            return new PowerPointStressFeedbackRibbon(this.IsAddInRunningMethod);
+            return new PowerPointStressFeedbackRibbon(this.IsAddInRunningMethod, SessionIdChange, UrlChange);
         }
 
 

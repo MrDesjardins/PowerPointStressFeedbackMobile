@@ -36,6 +36,8 @@ namespace PowerPointStressFeedbackAddIn
 
         private static Random random = new Random();
         private Action<bool> isAddInRunning;
+        private Action<string> sessionIdChange;
+        private Action<string> urlChange;
 
         public static string RandomString(int length)
         {
@@ -44,10 +46,13 @@ namespace PowerPointStressFeedbackAddIn
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        public PowerPointStressFeedbackRibbon(Action<bool> isAddInRunning)
+        public PowerPointStressFeedbackRibbon(Action<bool> isAddInRunning, Action<string> sessionIdChange, Action<string> urlChange)
         {
             this.isAddInRunning = isAddInRunning;
+            this.sessionIdChange = sessionIdChange;
+            this.urlChange = urlChange;
         }
+
 
         public void OnActionCallback(Office.IRibbonControl control, bool isPressed)
         {
@@ -61,14 +66,26 @@ namespace PowerPointStressFeedbackAddIn
 
         public string GetSessionEditBoxText(Office.IRibbonControl control)
         {
-            return RandomString(8);
+            var randomId = RandomString(8);
+            this.sessionIdChange(randomId);
+            return randomId;
         }
 
         public string GetUrlEditBoxText(Office.IRibbonControl control)
         {
-            return "http://localhost:36204/";
+            var defaultUrl = "http://localhost:36204/";
+            this.urlChange(defaultUrl);
+            return defaultUrl;
         }
 
+        private void SessionIdOnChange(Office.IRibbonControl control, string data)
+        {
+            this.sessionIdChange(data);
+        }
+        private void UrlOnChange(Office.IRibbonControl control, string data)
+        {
+            this.urlChange(data);
+        }
         #region IRibbonExtensibility Members
 
         public string GetCustomUI(string ribbonID)
