@@ -10,6 +10,8 @@ namespace PowerPointStressFeedbackAddIn
 {
     public partial class PageMovementAddIn
     {
+        private bool isAddInRunning = false;
+
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
         {
         }
@@ -17,10 +19,17 @@ namespace PowerPointStressFeedbackAddIn
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
+
             this.Application.SlideShowBegin += OnSlideShowBegin;
             this.Application.SlideShowEnd += OnSlideShowEnd;
             this.Application.SlideShowOnNext += OnSlideNext;
             this.Application.SlideShowOnPrevious += OnSlidePrevious;
+  
+        }
+
+        private void IsAddInRunningMethod(bool isRunning)
+        {
+            this.isAddInRunning = isRunning;
         }
 
         private void OnSlidePrevious(PowerPoint.SlideShowWindow wn)
@@ -49,8 +58,17 @@ namespace PowerPointStressFeedbackAddIn
 
         private void SendData(int slideNumber)
         {
-            System.Diagnostics.Debug.WriteLine(DateTime.Now + ":" + slideNumber);
+            if (this.isAddInRunning)
+            {
+                System.Diagnostics.Debug.WriteLine(DateTime.Now + ":" + slideNumber);
+            }
         }
+
+        protected override Microsoft.Office.Core.IRibbonExtensibility CreateRibbonExtensibilityObject()
+        {
+            return new PowerPointStressFeedbackRibbon(this.IsAddInRunningMethod);
+        }
+
 
 
         #region VSTO generated code

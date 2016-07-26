@@ -151,6 +151,7 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="PowerPointStressFeedbackRibbon.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -182,6 +183,9 @@
       <DependentUpon>PageMovementAddIn.Designer.xml</DependentUpon>
     </Compile>
     <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PowerPointStressFeedbackRibbon.xml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

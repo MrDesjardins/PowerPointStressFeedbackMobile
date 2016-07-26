@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" onLoad="Ribbon_Load">
+  <ribbon>
+    <tabs>
+      <tab idMso="TabAddIns">
+        <group id="powerpointfeedbackgroup"
+               label="PowerPoint Stress Feedback">
+          <editBox id="txtSessionId" 
+            label="SessionId:"
+            screentip="Text"
+            supertip="SessionId where the PowerPoint information are sent"
+            getText="GetSessionEditBoxText"
+            sizeString="WWWWWWWW"
+                   />
+          <editBox id="txtUrl"
+            label="Server URL:"
+            screentip="Text"
+            supertip="Url to send your data"
+            getText="GetUrlEditBoxText"
+            sizeString="WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+                   />
+          <toggleButton id="onOffButton" onAction="OnActionCallback" label="Activated" />
+        </group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>
+
