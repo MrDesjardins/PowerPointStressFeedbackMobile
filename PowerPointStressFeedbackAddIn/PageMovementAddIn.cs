@@ -25,10 +25,18 @@ namespace PowerPointStressFeedbackAddIn
 
             this.Application.SlideShowBegin += OnSlideShowBegin;
             this.Application.SlideShowEnd += OnSlideShowEnd;
-            this.Application.SlideShowOnNext += OnSlideNext;
-            this.Application.SlideShowOnPrevious += OnSlidePrevious;
+            this.Application.SlideShowNextClick += this.OnSlideShowNextClick;
+            this.Application.SlideShowOnNext += this.OnSlideShowOnNext;
+            this.Application.SlideShowNextSlide += this.OnSlideShowNextSlide;
+            this.Application.SlideShowOnPrevious += this.OnSlideShowOnPrevious;
   
         }
+
+        private void OnSlideShowOnNext(PowerPoint.SlideShowWindow wn)
+        {
+            System.Diagnostics.Debug.WriteLine("OnSlideShowOnNext :" + DateTime.Now + ":" + wn.View.Slide.SlideNumber);
+        }
+
 
         private void IsAddInRunningMethod(bool isRunning)
         {
@@ -45,19 +53,31 @@ namespace PowerPointStressFeedbackAddIn
             this.url = url;
         }
 
-        private void OnSlidePrevious(PowerPoint.SlideShowWindow wn)
+        private void OnSlideShowOnPrevious(PowerPoint.SlideShowWindow wn)
         {
+            System.Diagnostics.Debug.WriteLine("OnSlidePrevious :" + DateTime.Now + ":" + wn.View.Slide.SlideNumber);
+        }
+        /// <summary>
+        /// This is invoked what ever if we move back or forth
+        /// </summary>
+        /// <param name="wn"></param>
+        private void OnSlideShowNextClick(PowerPoint.SlideShowWindow wn, PowerPoint.Effect neffect)
+        {
+            System.Diagnostics.Debug.WriteLine("OnSlideShowNextClick :" + DateTime.Now + ":" + wn.View.Slide.SlideNumber);
             SendData(wn.View.Slide.SlideNumber);
         }
 
-        private void OnSlideNext(PowerPoint.SlideShowWindow wn)
+
+        private void OnSlideShowNextSlide(PowerPoint.SlideShowWindow wn)
         {
-            SendData(wn.View.Slide.SlideNumber);
+            System.Diagnostics.Debug.WriteLine("OnSlideNext :" + DateTime.Now + ":" + wn.View.Slide.SlideNumber);
+
         }
 
 
         private void OnSlideShowEnd(PowerPoint.Presentation pres)
         {
+            System.Diagnostics.Debug.WriteLine("OnSlideShowEnd :" + DateTime.Now);
             SendData(-1);
         }
 
@@ -65,6 +85,7 @@ namespace PowerPointStressFeedbackAddIn
 
         private void OnSlideShowBegin(PowerPoint.SlideShowWindow wn)
         {
+            System.Diagnostics.Debug.WriteLine("OnSlideShowBegin :" + DateTime.Now + ":" + wn.View.Slide.SlideNumber);
             SendData(wn.View.Slide.SlideNumber);
         }
 
@@ -73,7 +94,7 @@ namespace PowerPointStressFeedbackAddIn
         {
             if (this.isAddInRunning)
             {
-                System.Diagnostics.Debug.WriteLine(DateTime.Now + ":" + slideNumber);
+                System.Diagnostics.Debug.WriteLine("SendData :" + DateTime.Now + ":" + slideNumber);
                 using (var client = new HttpClient())
                 {
                     var dateTime = DateTime.Now.ToString("yyyyDMMDdd_HHTmmTss"); //Special format see Web controller
