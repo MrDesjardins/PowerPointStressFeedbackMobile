@@ -1,0 +1,1 @@
+This project is licensed under the terms of the Apache License v 2.0 - Copyright 2016 Microsoft Corporation. http://www.apache.org/licenses/LICENSE-2.0
