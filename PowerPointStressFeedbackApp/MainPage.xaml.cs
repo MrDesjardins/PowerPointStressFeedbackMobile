@@ -97,10 +97,24 @@ namespace PowerPointStressFeedbackApp
             {
                 await sensorManager.SkinTemperature.StartReadingsAsync(new CancellationToken());
             }
+
+            //GSR (Galvanic Skin Response)
+            sensorManager.Gsr.ReadingChanged += this.GsrOnReadingChanged;
+            if (sensorManager.Gsr.GetCurrentUserConsent() != UserConsent.Granted)
+            {
+                await sensorManager.Gsr.RequestUserConsentAsync();
+            }
+            if (sensorManager.Gsr.GetCurrentUserConsent() == UserConsent.Granted)
+            {
+                await sensorManager.Gsr.StartReadingsAsync(new CancellationToken());
+            }
         }
 
+ 
         private int lastHeartBeat;
         private double lastTemperature;
+        private int lastGsr;
+
         private void SkinTemperatureOnReadingChanged(object sender, BandSensorReadingEventArgs<IBandSkinTemperatureReading> e)
         {
             this.lastTemperature = e.SensorReading.Temperature;
@@ -109,7 +123,7 @@ namespace PowerPointStressFeedbackApp
                {
                    
                    this.txtLog2.Text = DateTime.Now + " Data = " + this.lastTemperature + "\n" + this.txtLog2.Text;
-                   this.SendToServer(this.lastHeartBeat, this.lastTemperature);
+                   this.SendToServer(this.lastHeartBeat, this.lastTemperature, this.lastGsr);
                });
         
         }
@@ -121,18 +135,31 @@ namespace PowerPointStressFeedbackApp
                 () =>
                 {
                     this.txtLog1.Text = DateTime.Now + " Data = " + this.lastHeartBeat + "\n" + this.txtLog1.Text;
-                    this.SendToServer(this.lastHeartBeat, this.lastTemperature);
+                    this.SendToServer(this.lastHeartBeat, this.lastTemperature, this.lastGsr);
                 });
   
         }
 
-        private async void SendToServer(int hearbeat, double temperature)
+        private void GsrOnReadingChanged(object sender, BandSensorReadingEventArgs<IBandGsrReading> e)
+        {
+            this.lastGsr = e.SensorReading.Resistance;
+            CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+               () =>
+               {
+
+                   this.txtLog3.Text = DateTime.Now + " Data = " + this.lastGsr + "\n" + this.txtLog3.Text;
+                   this.SendToServer(this.lastHeartBeat, this.lastTemperature, this.lastGsr);
+               });
+        }
+
+
+        private async void SendToServer(int hearbeat, double temperature, int gsr)
         {
             using (var client = new HttpClient())
             {
                 var dateTime = DateTime.Now.ToString("yyyyDMMDdd_HHTmmTss"); //Special format see Web controller
                 var sessionId = this.txtSessionId.Text;
-                var url = $"{this.txtUrl.Text}StressFeedback/BandData/{sessionId}/{dateTime}/{hearbeat}/{temperature}/";
+                var url = $"{this.txtUrl.Text}StressFeedback/BandData/{sessionId}/{dateTime}/{hearbeat}/{temperature}/{gsr}";
                 await client.PostAsync(url, null);
             }
         }
@@ -146,6 +173,7 @@ namespace PowerPointStressFeedbackApp
 
             await this.bandClient.SensorManager.HeartRate.StopReadingsAsync();
             await this.bandClient.SensorManager.SkinTemperature.StopReadingsAsync();
+            await this.bandClient.SensorManager.Gsr.StopReadingsAsync();
             this.bandClient.Dispose();
             this.bandClient = null;
             this.bandClientInfo = null;

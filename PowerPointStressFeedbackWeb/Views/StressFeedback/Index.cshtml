@@ -28,6 +28,7 @@ else
                 var heartBeatRange = [];
                 var heartBeatAverage = [];
                 var temperatureAverage = [];
+                var gsrAverage = [];
                 var slides = [];
                 var stressZone = [];
                 for(var i=0;i<data.length;i++)
@@ -36,18 +37,19 @@ else
                     heartBeatRange.push([data[i].HeartBeatMinimum, data[i].HeartBeatMaximum]);
                     heartBeatAverage.push(data[i].HeartBeatAverage);
                     temperatureAverage.push(data[i].Temperature);
+                    gsrAverage.push(data[i].GsrAverage);
                     if(data[i].SlideIndex === 0)
                     {
                         relaxedHeartBeat = data[i].HeartBeatMinimum; //Relaxed Heart Beat is the minimum before the first slide
                     }
                     if(data[i].HeartBeatAverage>relaxedHeartBeat*1.2){ //Extreme stress
-                        stressZone.push({value:data[i].SlideIndex, color:'#f20f0f'});
+                        stressZone.push({value:data[i].SlideIndex, fillColor:'#f20f0f'});
                     }
                     else if(data[i].HeartBeatAverage>relaxedHeartBeat*1.1){ // More stressed
-                        stressZone.push({value:data[i].SlideIndex, color:'#ff9999'});
+                        stressZone.push({value:data[i].SlideIndex, fillColor:'#ff9999'});
                     }
                     else{ //Relax
-                        stressZone.push({value:data[i].SlideIndex, color:'#51B9FE'});
+                        stressZone.push({value:data[i].SlideIndex, fillColor:'#51B9FE'});
                     }
                 }
               
@@ -70,14 +72,14 @@ else
                             title: {
                                 text: 'Heart Beat',
                                 style: {
-                                    color: Highcharts.getOptions().colors[1]
+                                    color: '#19566b'
                                 }
                             },
                             labels: {
-                            format: '{value} bpm',
-                            style: {
-                                color: Highcharts.getOptions().colors[1]
-                            }
+                                format: '{value} bpm',
+                                style: {
+                                    color: '#19566b'
+                                }
                             }
                         ,
                         min:50,
@@ -99,11 +101,25 @@ else
                         min:36,
                         max:38,
                         tickInterval:0.5
+                    }, { // Third yAxis (GSR)
+                        title: {
+                            text: 'Galvanic Skin Response (GSR)',
+                            style: {
+                                color: 'rgba(212,124,247,1)'
+                            }
+                        },
+                        labels: {
+                            format: '{value} Ω',
+                            style: {
+                                color: 'rgba(212,124,247,1)'
+                            }
+                        },
+                        opposite: true
                     }],
 
                     tooltip: {
                         shared: true,
-                        headerFormat: '<small>Slide {point.key}</small><br/>'
+                        headerFormat: '<span style="font-weight:bold; font-size:16px; padding-bottom:5px;">Slide {point.key}</span><br/>'
                     },
 
                     series: [{
@@ -115,22 +131,38 @@ else
                         tooltip: {
                         pointFormat: '<span style="font-weight: bold; color: rgba(255,155,0,1)">{series.name}</span>: <b>{point.y:.1f} °C</b><br/>'
                         }
-                    }, {
+                    }
+                    , {
                         name: 'Heart Beat Average',
                         type: 'areaspline',
                         data: heartBeatAverage,
                         tooltip: {
                             pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y} bpm</b><br/>'
-                        }, 
-                         zoneAxis: 'x'
-                        ,zones: stressZone
-                    }, {
+                        }
+                        ,lineWidth: 5
+                        ,zoneAxis: 'x'
+                        ,zones: stressZone,
+                        color:'#19566b'
+                    }
+                    , {
                         name: 'Heart Beat Min-Max',
                         type: 'errorbar',
                         data: heartBeatRange,
                         tooltip: {
                             pointFormat: '(Min-Max: {point.low}-{point.high} bpm)<br/>'
                         }
+                    }
+                    ,{
+                        name: 'Galvanic Skin Response (GSR)',
+                        type: 'line',
+                        yAxis: 2,
+                        data: gsrAverage,
+                        color: 'rgba(212,124,247,0.8)',
+                        tooltip: {
+                            pointFormat: '<span style="font-weight: bold; color: rgba(212,124,247,1)">{series.name}</span>: <b>{point.y:.1f} Ω</b><br/>'
+                        }
+                        ,lineWidth: 2
+                        ,dashStyle: 'ShortDash'
                     }]
                 });
 
