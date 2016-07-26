@@ -24,22 +24,38 @@ else
             function() {
 
                 //Build 2 array. One for the average, one for the range
+                var relaxedHeartBeat = 60;
                 var heartBeatRange = [];
                 var heartBeatAverage = [];
                 var temperatureAverage = [];
                 var slides = [];
+                var stressZone = [];
                 for(var i=0;i<data.length;i++)
                 {
                     slides.push(data[i].SlideIndex);
                     heartBeatRange.push([data[i].HeartBeatMinimum, data[i].HeartBeatMaximum]);
                     heartBeatAverage.push(data[i].HeartBeatAverage);
                     temperatureAverage.push(data[i].Temperature);
+                    if(data[i].SlideIndex === 0)
+                    {
+                        relaxedHeartBeat = data[i].HeartBeatMinimum; //Relaxed Heart Beat is the minimum before the first slide
+                    }
+                    if(data[i].HeartBeatAverage>relaxedHeartBeat*1.2){ //Extreme stress
+                        stressZone.push({value:data[i].SlideIndex, color:'#f20f0f'});
+                    }
+                    else if(data[i].HeartBeatAverage>relaxedHeartBeat*1.1){ // More stressed
+                        stressZone.push({value:data[i].SlideIndex, color:'#ff9999'});
+                    }
+                    else{ //Relax
+                        stressZone.push({value:data[i].SlideIndex, color:'#51B9FE'});
+                    }
                 }
-
+              
                 //http://api.highcharts.com/highcharts#tooltip
                 $('#container').highcharts({
                     chart: {
-                        zoomType: 'xy'
+                        zoomType: 'xy',
+                        alignTicks: true
                     },
                     title: {
                         text: 'Power Point Stress Feedback : Heart Beat and Skin Temperature'
@@ -60,7 +76,10 @@ else
                             style: {
                                 color: Highcharts.getOptions().colors[1]
                             }
-                        }
+                            }
+                        ,
+                        min:50,
+                        tickInterval:5
                     }, { // Secondary yAxis
                         title: {
                             text: 'Body Temperature',
@@ -77,7 +96,7 @@ else
                         opposite: true,
                         min:36,
                         max:38,
-                        tickInterval:0.05
+                        tickInterval:0.5
                     }],
 
                     tooltip: {
@@ -90,17 +109,19 @@ else
                         type: 'column',
                         yAxis: 1,
                         data: temperatureAverage,
-                        color: 'rgba(255,155,0,0.1)',
+                        color: 'rgba(255,155,0,0.3)',
                         tooltip: {
                         pointFormat: '<span style="font-weight: bold; color: rgba(255,155,0,1)">{series.name}</span>: <b>{point.y:.1f} °C</b><br/>'
                         }
                     }, {
                         name: 'Heart Beat Average',
-                        type: 'spline',
+                        type: 'areaspline',
                         data: heartBeatAverage,
                         tooltip: {
                             pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y} bpm</b><br/>'
-                        }
+                        }, 
+                         zoneAxis: 'x'
+                        ,zones: stressZone
                     }, {
                         name: 'Heart Beat Min-Max',
                         type: 'errorbar',
