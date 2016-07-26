@@ -1,0 +1,11 @@
+﻿@model PowerPointStressFeedbackWeb.Controllers.MergedData
+
+@if (Model == null)
+{
+    <h1>No data, provide a session id</h1>
+}
+else
+{
+    <h1>Data from session id : @Model.SessionId</h1>
+}
+
