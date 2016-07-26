@@ -10,7 +10,20 @@ else
     <h1>Data from session id : @Model.SessionId</h1>
 
     <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-
+    <div id="info-container" style="padding:10px; border:1px solid #778899; border-radius: 3px">
+        <header style="font-size: 20px">
+            Information
+        </header>
+        <div style="color: #51B9FE">
+            <span style="font-weight: bold; margin-right: 10px;">Relax heartbeat:</span><span id="relax-heartbeat"></span>
+        </div>
+        <div style="color: #ff9999">
+            <span style="font-weight: bold; margin-right: 10px;">Small stress threshold (10%):</span><span id="stress1-heartbeat"></span>
+        </div>
+        <div style="color: #f20f0f">
+            <span style="font-weight: bold; margin-right: 10px;">Small stress threshold (20%):</span><span id="stress2-heartbeat"></span>
+        </div>
+    </div>
     <script>
         @{
             var data = JsonConvert.SerializeObject(Model.Data);
@@ -52,7 +65,9 @@ else
                         stressZone.push({value:data[i].SlideIndex, fillColor:'#51B9FE'});
                     }
                 }
-              
+                $('#relax-heartbeat').text((relaxedHeartBeat).toFixed());
+                $('#stress1-heartbeat').text((relaxedHeartBeat*1.1).toFixed());
+                $('#stress2-heartbeat').text((relaxedHeartBeat*1.2).toFixed());
                 //http://api.highcharts.com/highcharts#tooltip
                 $('#container').highcharts({
                     chart: {

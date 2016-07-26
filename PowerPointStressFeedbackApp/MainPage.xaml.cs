@@ -111,56 +111,82 @@ namespace PowerPointStressFeedbackApp
         }
 
  
-        private int lastHeartBeat;
-        private double lastTemperature;
-        private int lastGsr;
+        private int lastHeartBeat = 0;
+        private double lastTemperature=0;
+        private int lastGsr = 0;
 
         private void SkinTemperatureOnReadingChanged(object sender, BandSensorReadingEventArgs<IBandSkinTemperatureReading> e)
         {
-            this.lastTemperature = e.SensorReading.Temperature;
-            CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-               () =>
-               {
-                   
-                   this.txtLog2.Text = DateTime.Now + " Data = " + this.lastTemperature + "\n" + this.txtLog2.Text;
-                   this.SendToServer(this.lastHeartBeat, this.lastTemperature, this.lastGsr);
-               });
-        
+            if (e.SensorReading.Temperature > 0)
+            {
+                this.lastTemperature = e.SensorReading.Temperature;
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                    () =>
+                    {
+
+                        this.txtLog2.Text = DateTime.Now + " Data = " + this.lastTemperature + "\n" + this.txtLog2.Text;
+                        this.SendToServer(this.lastHeartBeat, this.lastTemperature, this.lastGsr);
+                    });
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            }
         }
 
         private void HeartRate_ReadingChanged(object sender, Microsoft.Band.Sensors.BandSensorReadingEventArgs<Microsoft.Band.Sensors.IBandHeartRateReading> e)
         {
-            this.lastHeartBeat = e.SensorReading.HeartRate;
-            CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-                () =>
-                {
-                    this.txtLog1.Text = DateTime.Now + " Data = " + this.lastHeartBeat + "\n" + this.txtLog1.Text;
-                    this.SendToServer(this.lastHeartBeat, this.lastTemperature, this.lastGsr);
-                });
-  
+            if (e.SensorReading.HeartRate > 0)
+            {
+                this.lastHeartBeat = e.SensorReading.HeartRate;
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                    () =>
+                    {
+                        this.txtLog1.Text = DateTime.Now + " Data = " + this.lastHeartBeat + "\n" + this.txtLog1.Text;
+                        this.SendToServer(this.lastHeartBeat, this.lastTemperature, this.lastGsr);
+                    });
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            }
+
         }
 
         private void GsrOnReadingChanged(object sender, BandSensorReadingEventArgs<IBandGsrReading> e)
         {
-            this.lastGsr = e.SensorReading.Resistance;
-            CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-               () =>
-               {
+            if (e.SensorReading.Resistance > 0)
+            {
+                this.lastGsr = e.SensorReading.Resistance;
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                    () =>
+                    {
 
-                   this.txtLog3.Text = DateTime.Now + " Data = " + this.lastGsr + "\n" + this.txtLog3.Text;
-                   this.SendToServer(this.lastHeartBeat, this.lastTemperature, this.lastGsr);
-               });
+                        this.txtLog3.Text = DateTime.Now + " Data = " + this.lastGsr + "\n" + this.txtLog3.Text;
+                        this.SendToServer(this.lastHeartBeat, this.lastTemperature, this.lastGsr);
+                    });
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            }
+        }
+
+        /// <summary>
+        /// Make sure we have at least 1 heartbeat, temperature and gsr before sending
+        /// </summary>
+        /// <returns></returns>
+        private bool HasMinimumAllData()
+        {
+            return this.lastHeartBeat != 0 && this.lastGsr != 0 && this.lastTemperature != 0;
         }
 
 
         private async void SendToServer(int hearbeat, double temperature, int gsr)
         {
-            using (var client = new HttpClient())
+            if (this.HasMinimumAllData())
             {
-                var dateTime = DateTime.Now.ToString("yyyyDMMDdd_HHTmmTss"); //Special format see Web controller
-                var sessionId = this.txtSessionId.Text;
-                var url = $"{this.txtUrl.Text}StressFeedback/BandData/{sessionId}/{dateTime}/{hearbeat}/{temperature}/{gsr}";
-                await client.PostAsync(url, null);
+                using (var client = new HttpClient())
+                {
+                    var dateTime = DateTime.Now.ToString("yyyyDMMDdd_HHTmmTss"); //Special format see Web controller
+                    var sessionId = this.txtSessionId.Text;
+                    var url = $"{this.txtUrl.Text}StressFeedback/BandData/{sessionId}/{dateTime}/{hearbeat}/{temperature}/{gsr}";
+                    await client.PostAsync(url, null);
+                }
             }
         }
 

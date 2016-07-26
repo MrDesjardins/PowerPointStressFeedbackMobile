@@ -200,11 +200,23 @@ namespace PowerPointStressFeedbackWeb.Controllers
                     sumGsr += dd.Gsr;
                     indexBandData++;
                 }
-                if (count != 0)// No Band data for the Slide (can occur if change really fast)
+                if (count != 0) // No Band data for the Slide (can occur if change really fast)
                 {
                     item.HeartBeatAverage = sumHeartBeat/count;
                     item.Temperature = sumTemperature/count;
                     item.GsrAverage = Convert.ToInt32(sumGsr/count);
+                }
+                else
+                {
+                    //Take previous data if we are not the first slide
+                    if (powerpointIndex>0)
+                    {
+                        item.Temperature = mergedData.Data[mergedData.Data.Count - 1].Temperature;
+                        item.HeartBeatAverage = mergedData.Data[mergedData.Data.Count - 1].HeartBeatAverage;
+                        item.HeartBeatMinimum = mergedData.Data[mergedData.Data.Count - 1].HeartBeatMinimum;
+                        item.HeartBeatMaximum = mergedData.Data[mergedData.Data.Count - 1].HeartBeatMaximum;
+                        item.GsrAverage = mergedData.Data[mergedData.Data.Count - 1].GsrAverage;
+                    }
                 }
                 mergedData.Data.Add(item);
             }

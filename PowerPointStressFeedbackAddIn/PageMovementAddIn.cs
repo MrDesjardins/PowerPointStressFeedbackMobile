@@ -104,6 +104,7 @@ namespace PowerPointStressFeedbackAddIn
             }
         }
 
+
         protected override Microsoft.Office.Core.IRibbonExtensibility CreateRibbonExtensibilityObject()
         {
             return new PowerPointStressFeedbackRibbon(this.IsAddInRunningMethod, this.SessionIdChange, this.UrlChange);
