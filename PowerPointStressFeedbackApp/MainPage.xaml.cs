@@ -38,14 +38,13 @@ namespace PowerPointStressFeedbackApp
      
         }
 
-
         public async Task InitAsync()
         {
             try
             {
                 if (this.bandClientInfo == null)
                 {
-                    await FindDevicesAsync();
+                    await this.FindDevicesAsync();
                 }
                 if (this.bandClientInfo != null)
                 {
@@ -84,19 +83,17 @@ namespace PowerPointStressFeedbackApp
             }
             if (sensorManager.HeartRate.GetCurrentUserConsent() == UserConsent.Granted)
             {
-               //sensorManager.HeartRate.ReportingInterval = TimeSpan.FromSeconds(10);
                 await sensorManager.HeartRate.StartReadingsAsync(new CancellationToken());
             }
 
             //Temperature
-            sensorManager.SkinTemperature.ReadingChanged += SkinTemperatureOnReadingChanged;
+            sensorManager.SkinTemperature.ReadingChanged += this.SkinTemperatureOnReadingChanged;
             if (sensorManager.SkinTemperature.GetCurrentUserConsent() != UserConsent.Granted)
             {
                 await sensorManager.SkinTemperature.RequestUserConsentAsync();
             }
             if (sensorManager.SkinTemperature.GetCurrentUserConsent() == UserConsent.Granted)
             {
-                //sensorManager.SkinTemperature.ReportingInterval = TimeSpan.FromSeconds(10);
                 await sensorManager.SkinTemperature.StartReadingsAsync(new CancellationToken());
             }
         }
@@ -115,7 +112,7 @@ namespace PowerPointStressFeedbackApp
             CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
                 () =>
                 {
-                    this.txtLog.Text = DateTime.Now + " Data = " + e.SensorReading.HeartRate + "\n" + this.txtLog.Text;
+                    this.txtLog1.Text = DateTime.Now + " Data = " + e.SensorReading.HeartRate + "\n" + this.txtLog1.Text;
                 });
         }
 
@@ -126,6 +123,7 @@ namespace PowerPointStressFeedbackApp
             this.btnStop.IsEnabled = false;
 
             await this.bandClient.SensorManager.HeartRate.StopReadingsAsync();
+            await this.bandClient.SensorManager.SkinTemperature.StopReadingsAsync();
             this.bandClient.Dispose();
             this.bandClient = null;
             this.bandClientInfo = null;

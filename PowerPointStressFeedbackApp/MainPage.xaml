@@ -8,12 +8,27 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <TextBox x:Name="txtSessionId" HorizontalAlignment="Left" Margin="10,35,0,0" TextWrapping="Wrap" Text="12345" VerticalAlignment="Top" Width="340"/>
-        <Button x:Name="btnStart" Content="Start" HorizontalAlignment="Left" Margin="11,72,0,0" VerticalAlignment="Top" Width="173" Click="btnStart_Click"/>
-        <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Left" Margin="189,72,0,0" VerticalAlignment="Top" Width="161" Click="btnStop_Click"/>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="SessionId:" VerticalAlignment="Top"/>
-        <TextBlock x:Name="txtLog" HorizontalAlignment="Left" Height="823" Margin="11,127,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="692"/>
-        <TextBlock x:Name="txtLog2" HorizontalAlignment="Left" Height="823" Margin="749,127,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="681"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.5*"/>
+            <ColumnDefinition Width="0.5*"/>
+        </Grid.ColumnDefinitions>
+        <RelativePanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+            <TextBox x:Name="txtSessionId" HorizontalAlignment="Left" Margin="100,10,0,0" TextWrapping="Wrap" Text="12345" VerticalAlignment="Top" Width="250"/>
+            <TextBlock x:Name="textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Text="SessionId:" VerticalAlignment="Top" Margin="11,22,-11,-22"/>
+            <Button x:Name="btnStart" Content="Start" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="173" Click="btnStart_Click" Margin="11,47,-10.667,-47"/>
+            <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="161" Click="btnStop_Click" Margin="189,47,-188.667,-47"/>
+            <RelativePanel HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0"/>
+        </RelativePanel>
+        <ScrollViewer Grid.Row="1" Grid.Column="0">
+            <TextBlock x:Name="txtLog1" HorizontalAlignment="Left"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" />
+        </ScrollViewer>
+        <ScrollViewer Grid.Row="1" Grid.Column="1">
+            <TextBlock x:Name="txtLog2" HorizontalAlignment="Left"   TextWrapping="Wrap" Text="" VerticalAlignment="Top" />
+        </ScrollViewer>
 
     </Grid>
 </Page>
