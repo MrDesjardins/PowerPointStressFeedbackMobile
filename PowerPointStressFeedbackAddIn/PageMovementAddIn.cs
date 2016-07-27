@@ -63,8 +63,9 @@ namespace PowerPointStressFeedbackAddIn
         /// <param name="wn"></param>
         private void OnSlideShowNextClick(PowerPoint.SlideShowWindow wn, PowerPoint.Effect neffect)
         {
-            System.Diagnostics.Debug.WriteLine("OnSlideShowNextClick :" + DateTime.Now + ":" + wn.View.Slide.SlideNumber);
-            SendData(wn.View.Slide.SlideNumber);
+            int slideNumber = wn.View.Slide.SlideNumber;
+            System.Diagnostics.Debug.WriteLine("OnSlideShowNextClick :" + DateTime.Now + ":" + slideNumber);
+            SendData(slideNumber);
         }
 
 

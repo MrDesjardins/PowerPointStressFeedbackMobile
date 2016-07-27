@@ -116,7 +116,7 @@ else
             <div class="box box-left" style="background-color:#dcf7ff">
                 <header>Relax heartbeat</header>
                 <div class="box-value-unit" style="color: #51B9FE">
-                    <div id="relax-heartbeat" class="box-value anim" ></div><i class="fa fa-heart unit" aria-hidden="true"></i>
+                    <div id="relax-heartbeat" class="box-value anim" >@Model.BeforePresentationHeartBeat</div><i class="fa fa-heart unit" aria-hidden="true"></i>
                 </div>
             </div>
                 <div class="box box-center" style="background-color:#f5d5d5">
@@ -190,7 +190,7 @@ else
 
 
                     //Build 2 array. One for the average, one for the range
-                    var relaxedHeartBeat = 60;
+                    var relaxedHeartBeat = @Model.BeforePresentationHeartBeat;
                     var heartBeatRange = [];
                     var heartBeatAverage = [];
                     var temperatureAverage = [];
@@ -206,10 +206,7 @@ else
                         heartBeatAverage.push({y:data[i].HeartBeatAverage});
                         temperatureAverage.push(data[i].Temperature);
                         gsrAverage.push({y:data[i].GsrAverage, dateTime:data[i].Time.replace('T',' '), timespan:data[i].SecondsOnSlide});
-                        if(i === 0)
-                        {
-                            relaxedHeartBeat = data[i].HeartBeatAverage; //Relaxed Heart Beat is the minimum before the first slide
-                        }
+
                         stressZone.push({value:lowStress, fillColor:'#51B9FE'});
                         stressZone.push({value:highStress, fillColor:'#ff9999'});
                         stressZone.push({value:8000, fillColor:'#f20f0f'});
@@ -224,7 +221,7 @@ else
                         //}
                     }
                     //stressZone.push({value:8000, fillColor:'#51B9FE'});
-                    $('#relax-heartbeat').text((relaxedHeartBeat).toFixed());
+                    //$('#relax-heartbeat').text((relaxedHeartBeat).toFixed());
                     $('#stress1-heartbeat').text((relaxedHeartBeat*1.1).toFixed());
                     $('#stress2-heartbeat').text((relaxedHeartBeat*1.2).toFixed());
                     //http://api.highcharts.com/highcharts#tooltip

@@ -75,7 +75,6 @@ namespace PowerPointStressFeedbackWeb.Controllers
             }
 
             var testPowerpointData = new List<PowerPointData>();
-            testPowerpointData.Add(new PowerPointData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 03), SlideIndex = 0 });//No started presentation
             testPowerpointData.Add(new PowerPointData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 10), SlideIndex = 1 });
             testPowerpointData.Add(new PowerPointData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 09, 30), SlideIndex = 2 });
             testPowerpointData.Add(new PowerPointData { SessionId = fakeSession, DateTime = new DateTime(2016, 07, 26, 11, 10, 05), SlideIndex = 3 });
@@ -173,6 +172,8 @@ namespace PowerPointStressFeedbackWeb.Controllers
             var mergedData = new MergedData();
             mergedData.SessionId = sessionId;
             mergedData.Data = new List<MergedDataItem>();
+            var powerPointStartDateTime = powerPointData.OrderBy(p=>p.DateTime).First().DateTime;
+            mergedData.BeforePresentationHeartBeat = Convert.ToInt32(bandData.Where(band=>band.DateTime < powerPointStartDateTime).Average(band => band.HeartBeat));
             var indexBandData = 0;
             for (int powerpointIndex = 0; powerpointIndex < powerPointData.Count; powerpointIndex++)
             {
@@ -281,6 +282,9 @@ namespace PowerPointStressFeedbackWeb.Controllers
         public double TemperatureMinimum { get; set; }
         public double TemperatureMaximum { get; set; }
         public double TemperatureAverage { get; set; }
+
+        public int BeforePresentationHeartBeat { get; set; }
+
         public MergedData()
         {
         }
