@@ -226,9 +226,14 @@ namespace PowerPointStressFeedbackWeb.Controllers
                         item.GsrAverage = mergedData.Data[mergedData.Data.Count - 1].GsrAverage;
                     }
                 }
-                mergedData.Data.Add(item);
+                mergedData.Data.Add(item);              
             }
-
+            mergedData.HeartBeatAverage = Convert.ToInt32(bandData.Average(d => d.HeartBeat));
+            mergedData.HeartBeatMaximum = Convert.ToInt32(bandData.Max(d => d.HeartBeat));
+            mergedData.HeartBeatMinimum = Convert.ToInt32(bandData.Min(d => d.HeartBeat));
+            mergedData.TemperatureAverage = bandData.Average(d => d.Temperature);
+            mergedData.TemperatureMaximum = bandData.Max(d => d.Temperature);
+            mergedData.TemperatureMinimum = bandData.Min(d => d.Temperature);
             return mergedData;
         }
 
@@ -269,6 +274,16 @@ namespace PowerPointStressFeedbackWeb.Controllers
         public string SessionId { get; set; }
 
         public List<MergedDataItem> Data{get;set;}
+
+        public int HeartBeatMinimum { get; set; }
+        public int HeartBeatMaximum { get; set; }
+        public int HeartBeatAverage { get; set; }
+        public double TemperatureMinimum { get; set; }
+        public double TemperatureMaximum { get; set; }
+        public double TemperatureAverage { get; set; }
+        public MergedData()
+        {
+        }
     }
 
     public class MergedDataItem

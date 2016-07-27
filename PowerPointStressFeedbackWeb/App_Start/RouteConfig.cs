@@ -14,10 +14,16 @@ namespace PowerPointStressFeedbackWeb
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
             routes.MapMvcAttributeRoutes();
             routes.MapRoute(
+                           name: "Short",
+                           url: "{sessionId}",
+                           defaults: new { controller = "StressFeedback", action = "Index", sessionId = "12345" }
+                       );
+            routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{sessionId}",
                 defaults: new { controller = "StressFeedback", action = "Index", sessionId = "12345" }
             );
+           
         }
     }
 }

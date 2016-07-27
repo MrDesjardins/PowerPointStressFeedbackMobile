@@ -1,6 +1,105 @@
 ﻿@using Newtonsoft.Json
 @model PowerPointStressFeedbackWeb.Controllers.MergedData
+<style>
+    body{
+        background-color: #dedede;
+        font-family: 'Oswald', sans-serif;
+        margin-bottom:200px;
+    }
+    .box{
+        padding: 10px; 
+        border: 1px solid #778899; 
+        border-radius: 7px;   
+        width: 180px;
+        height: 180px;
+        float:left;
+        margin:10px;
+        box-shadow: black 2px 2px 6px;
+        transition: 500ms all;
+    }
+    .box-left:hover{
+            transform: perspective( 600px ) rotateY( 45deg ) scale(1.1 );
+    }
+    .box-center:hover{
+            transform: perspective( 600px ) scale(1.1 );
+    }
+    .box-right:hover{
+            transform: perspective( 600px ) rotateY( -45deg ) scale(1.1 );
+    }
 
+    #container-box-temperature  .box-left:hover{
+           transform: perspective( 600px ) rotateX( 25deg ) rotateY( 25deg ) scale(1.1 ); 
+    }
+     #container-box-temperature  .box-right:hover{
+           transform: perspective( 600px ) rotateX( 25deg ) rotateY( -25deg ) scale(1.1 ); 
+    }
+
+      #info-container  .box-left:hover{
+           transform: perspective( 600px ) rotateX( -25deg ) rotateY( 25deg ) scale(1.1 ); 
+    }
+     #info-container .box-right:hover{
+           transform: perspective( 600px ) rotateX( -25deg ) rotateY( -25deg ) scale(1.1 ); 
+    }
+
+
+    .container-box>header{
+        font-size:24px;
+    }
+
+     .box>header{
+         font-size:20px;
+     }
+
+     .container-box{
+             transform: perspective( 600px );
+    }
+    .container-box:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+
+    .box-value{
+        font-size: 64px;
+        display: inline-block;
+        text-shadow: white 1px 1px 1px;
+    }
+
+    #container-box-temperature .box-value{
+        font-size:58px
+
+    }
+
+    .box-value-unit{
+        margin: 20px;
+        text-align: center;
+    }
+
+    #all-containers{
+        margin:0 auto;
+        width:700px;
+    }
+
+    .unit{
+        font-size:20px;
+        vertical-align: top;
+        margin-top: 20px;
+    }
+    header i{
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        margin-left:10px;
+    }
+    #container-box-temperature{
+        color: #755017;
+    }
+
+    #container-box-heartbeat{
+        color:#a50b0b;
+    }
+</style>
 @if (Model == null)
 {
     <h1>No data, provide a session id</h1>
@@ -11,86 +110,159 @@ else
     <h2>Data from session id : @Model.SessionId</h2>
 
     <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-    <div id="info-container" style="padding:10px; border:1px solid #778899; border-radius: 3px">
-        <header style="font-size: 20px">
-            Information
-        </header>
-        <div style="color: #51B9FE">
-            <span style="font-weight: bold; margin-right: 10px;">Relax heartbeat:</span><span id="relax-heartbeat"></span>
+    <div id="all-containers">
+        <div id="info-container" class="container-box">
+            <header>Graphic Threshold<i class="fa fa-bar-chart" style="color:navy" aria-hidden="true"></i></header>
+            <div class="box box-left" style="background-color:#dcf7ff">
+                <header>Relax heartbeat</header>
+                <div class="box-value-unit" style="color: #51B9FE">
+                    <div id="relax-heartbeat" class="box-value anim" ></div><i class="fa fa-heart unit" aria-hidden="true"></i>
+                </div>
+            </div>
+                <div class="box box-center" style="background-color:#f5d5d5">
+                    <header>Small stress (10%)</header>
+                    <div class="box-value-unit" style="color: #ff9999">
+                        <div id="stress1-heartbeat" class="box-value anim" ></div><i class="fa fa-heart unit" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <div class="box box-right" style="background-color:#ffa0a0">
+                    <header>Higher stress (20%)</header>
+                    <div class="box-value-unit"  style="color: #f20f0f">
+                        <div id="stress2-heartbeat" class="box-value anim"></div><i class="fa fa-heart unit" aria-hidden="true"></i>
+                    </div>
+                </div>
         </div>
-        <div style="color: #ff9999">
-            <span style="font-weight: bold; margin-right: 10px;">Small stress threshold (10%):</span><span id="stress1-heartbeat"></span>
+        <div id="container-box-heartbeat" class="container-box">
+            <header>Heart Beat<i class="fa fa-heartbeat" style="color: red" aria-hidden="true"></i></header>
+            <div class="box box-left"  style="background-color:#ffe7e1">
+                <header>Min</header>
+                <div class="box-value-unit">
+                    <div id="min-heartbeat" class="box-value anim">@Model.HeartBeatMinimum</div><i class="fa fa-heart unit" aria-hidden="true"></i>
+                </div>
+            </div>
+            <div class="box box-center" style="background-color:#fbd9d1">
+                <header>Average</header>
+                <div class="box-value-unit">
+                    <div id="average-heartbeat" class="box-value anim">@Model.HeartBeatAverage</div><i class="fa fa-heart unit" aria-hidden="true"></i>
+                </div>
+            </div>
+            <div class="box box-right" style="background-color:#fbc6ba">
+                <header>Max</header>
+                <div class="box-value-unit">
+                    <div id="max-heartbeat" class="box-value anim">@Model.HeartBeatMaximum</div><i class="fa fa-heart unit" aria-hidden="true"></i>
+                </div>
+            </div>
         </div>
-        <div style="color: #f20f0f">
-            <span style="font-weight: bold; margin-right: 10px;">Small stress threshold (20%):</span><span id="stress2-heartbeat"></span>
+        <div id="container-box-temperature" class="container-box">
+            <header>Temperature<i class="fa fa-fire" style="color: orange" aria-hidden="true"></i></header>
+            <div class="box box-left" style="background-color: #ffda97;">
+                <header>Min</header>
+                <div class="box-value-unit">
+                    <div id="min-temperature" class="box-value">@Math.Round(Model.TemperatureMinimum, 2)</div><span class="unit">°C</span>
+                </div>
+            </div>
+            <div class="box box-center" style="background-color: #ffc863;">
+                <header>Average</header>
+                <div class="box-value-unit">
+                    <div id="average-temperature" class="box-value">@Math.Round(Model.TemperatureAverage, 2)</div><span class="unit">°C</span>
+                </div>
+            </div>
+            <div class="box box-right" style="background-color: #ffaf1b;">
+                <header>Max</header>
+                <div class="box-value-unit">
+                    <div id="max-temperature" class="box-value">@Math.Round(Model.TemperatureMaximum, 2)</div><span class="unit">°C</span>
+                </div>
+            </div>
         </div>
     </div>
-    <script>
+        <script>
         @{
             var data = JsonConvert.SerializeObject(Model.Data);
         }
-        var data = @Html.Raw(data);
+            var data = @Html.Raw(data);
 
 
 
 
-        $(document).ready(
-            function() {
-
-                //Build 2 array. One for the average, one for the range
-                var relaxedHeartBeat = 60;
-                var heartBeatRange = [];
-                var heartBeatAverage = [];
-                var temperatureAverage = [];
-                var gsrAverage = [];
-                var slides = [];
-                var stressZone = [];
-                var lowStress = relaxedHeartBeat * 1.1;
-                var highStress = relaxedHeartBeat * 1.2;
-                for(var i=0;i<data.length;i++)
+            $(document).ready(
+                function()
                 {
-                    slides.push(data[i].SlideIndex);
-                    heartBeatRange.push([data[i].HeartBeatMinimum, data[i].HeartBeatMaximum]);
-                    heartBeatAverage.push({y:data[i].HeartBeatAverage});
-                    temperatureAverage.push(data[i].Temperature);
-                    gsrAverage.push({y:data[i].GsrAverage, dateTime:data[i].Time.replace('T',' '), timespan:data[i].SecondsOnSlide});
-                    if(i === 0)
+
+
+                    //Build 2 array. One for the average, one for the range
+                    var relaxedHeartBeat = 60;
+                    var heartBeatRange = [];
+                    var heartBeatAverage = [];
+                    var temperatureAverage = [];
+                    var gsrAverage = [];
+                    var slides = [];
+                    var stressZone = [];
+                    var lowStress = relaxedHeartBeat * 1.1;
+                    var highStress = relaxedHeartBeat * 1.2;
+                    for(var i=0;i<data.length;i++)
                     {
-                        relaxedHeartBeat = data[i].HeartBeatAverage; //Relaxed Heart Beat is the minimum before the first slide
-                    }
-                    stressZone.push({value:lowStress, fillColor:'#51B9FE'});
-                    stressZone.push({value:highStress, fillColor:'#ff9999'});
-                    stressZone.push({value:8000, fillColor:'#f20f0f'});
-                    //if(data[i].HeartBeatAverage>highStress){ //Extreme stress
-                    //    stressZone.push({value:data[i].SlideIndex, fillColor:'#f20f0f'});
-                    //}
-                    //else if(data[i].HeartBeatAverage>lowStress){ // More stressed
-                    //    stressZone.push({value:data[i].SlideIndex, fillColor:'#ff9999'});
-                    //}
-                    //else{ //Relax
-                    //    stressZone.push({value:data[i].SlideIndex, fillColor:'#51B9FE'});
-                    //}
-                }
-                //stressZone.push({value:8000, fillColor:'#51B9FE'});
-                $('#relax-heartbeat').text((relaxedHeartBeat).toFixed());
-                $('#stress1-heartbeat').text((relaxedHeartBeat*1.1).toFixed());
-                $('#stress2-heartbeat').text((relaxedHeartBeat*1.2).toFixed());
-                //http://api.highcharts.com/highcharts#tooltip
-                $('#container').highcharts({
-                    chart: {
-                        zoomType: 'xy',
-                        alignTicks: true
-                    },
-                    title: {
-                        text: 'Heart Beat,  Skin Temperature and GSR'
-                    },
-                    xAxis: [{
-                        categories: slides
-                        ,title:  {
-                            text: 'Slide number'
+                        slides.push(data[i].SlideIndex);
+                        heartBeatRange.push([data[i].HeartBeatMinimum, data[i].HeartBeatMaximum]);
+                        heartBeatAverage.push({y:data[i].HeartBeatAverage});
+                        temperatureAverage.push(data[i].Temperature);
+                        gsrAverage.push({y:data[i].GsrAverage, dateTime:data[i].Time.replace('T',' '), timespan:data[i].SecondsOnSlide});
+                        if(i === 0)
+                        {
+                            relaxedHeartBeat = data[i].HeartBeatAverage; //Relaxed Heart Beat is the minimum before the first slide
                         }
-                    }],
-                    yAxis: [{ // Primary yAxis
+                        stressZone.push({value:lowStress, fillColor:'#51B9FE'});
+                        stressZone.push({value:highStress, fillColor:'#ff9999'});
+                        stressZone.push({value:8000, fillColor:'#f20f0f'});
+                        //if(data[i].HeartBeatAverage>highStress){ //Extreme stress
+                        //    stressZone.push({value:data[i].SlideIndex, fillColor:'#f20f0f'});
+                        //}
+                        //else if(data[i].HeartBeatAverage>lowStress){ // More stressed
+                        //    stressZone.push({value:data[i].SlideIndex, fillColor:'#ff9999'});
+                        //}
+                        //else{ //Relax
+                        //    stressZone.push({value:data[i].SlideIndex, fillColor:'#51B9FE'});
+                        //}
+                    }
+                    //stressZone.push({value:8000, fillColor:'#51B9FE'});
+                    $('#relax-heartbeat').text((relaxedHeartBeat).toFixed());
+                    $('#stress1-heartbeat').text((relaxedHeartBeat*1.1).toFixed());
+                    $('#stress2-heartbeat').text((relaxedHeartBeat*1.2).toFixed());
+                    //http://api.highcharts.com/highcharts#tooltip
+                    $('#container').highcharts({
+                      
+                        chart: {
+                            zoomType: 'xy',
+                            alignTicks: true,
+                            backgroundColor: '#dedede',  
+                            events:{
+                                load:function()
+                                {
+                                    $('.box-value.anim').each(function () {
+                                        $(this).prop('Counter',0)
+                                            .animate({
+                                                Counter: $(this).text()
+                                            }
+                                            , {
+                                                duration: 1200,
+                                                easing: 'swing',
+                                                step: function (now) {
+                                                    $(this).text(Math.ceil(now));
+                                                }
+                                            });
+                                    });
+                                }
+                            }
+                        },
+                        title: {
+                            text: 'Heart Beat,  Skin Temperature and GSR'
+                        },
+                        xAxis: [{
+                            categories: slides
+                            ,title:  {
+                                text: 'Slide number'
+                            }
+                        }],
+                        yAxis: [{ // Primary yAxis
                             title: {
                                 text: 'Heart Beat',
                                 style: {
@@ -103,7 +275,7 @@ else
                                     color: '#19566b'
                                 }
                             }
-                        ,/*plotLines: [
+                            ,/*plotLines: [
                             {
                                 color: '#f20f0f',
                                 width: 1,
@@ -111,7 +283,7 @@ else
                                 zIndex:5,
                                 dashStyle: 'ShortDot'
                             }
-                            ,{   
+                            ,{
                                 color: '#ff9999',
                                 width: 1,
                                 value: lowStress,
@@ -120,96 +292,102 @@ else
                             }
                         ]
                         ,*/
-                        min:50,
+                            min:50,
 
-                    }, { // Secondary yAxis
-                        title: {
-                            text: 'Body Temperature',
-                            style: {
-                                color: 'rgba(255,155,0,1)'
-                            }
-                        },
-                        labels: {
-                            format: '{value} °C',
-                            style: {
-                                color: 'rgba(255,155,0,1)'
-                            }
-                        },
-                        opposite: true,
-                        min:25,
-                        max:45
-                    }, { // Third yAxis (GSR)
-                        title: {
-                            text: 'Galvanic Skin Response (GSR)',
-                            style: {
-                                color: 'rgba(212,124,247,1)'
-                            }
-                        },
-                        labels: {
-                            format: '{value} Ω',
-                            style: {
-                                color: 'rgba(212,124,247,1)'
-                            }
-                        },
-                        opposite: true
-                    }],
+                        }, { // Secondary yAxis
+                            title: {
+                                text: 'Body Temperature',
+                                style: {
+                                    color: 'rgba(255,155,0,1)'
+                                }
+                            },
+                            labels: {
+                                format: '{value} °C',
+                                style: {
+                                    color: 'rgba(255,155,0,1)'
+                                }
+                            },
+                            opposite: true,
+                            min:25,
+                            max:45
+                        }, { // Third yAxis (GSR)
+                            title: {
+                                text: 'Galvanic Skin Response (GSR)',
+                                style: {
+                                    color: 'rgba(212,124,247,1)'
+                                }
+                            },
+                            labels: {
+                                format: '{value} Ω',
+                                style: {
+                                    color: 'rgba(212,124,247,1)'
+                                }
+                            },
+                            opposite: true
+                        }],
 
-                    tooltip: {
-                        shared: true,
-                        headerFormat: '<span style="font-weight:bold; font-size:16px; padding-bottom:5px;">Slide {point.key}</span><br/>'
-                    },
+                        tooltip: {
+                            shared: true,
+                            headerFormat: '<span style="font-weight:bold; font-size:16px; padding-bottom:5px;">Slide {point.key}</span><br/>'
+                        },
 
-                    series: [{
-                        name: 'Body Temperature',
-                        type: 'column',
-                        yAxis: 1,
-                        data: temperatureAverage,
-                        color: 'rgba(255,155,0,0.3)',
-                        zIndex:4,
-                        tooltip: {
-                            pointFormat: '<span style="font-weight: bold; color: rgba(255,155,0,1)">{series.name}</span>: <b>{point.y:.1f} °C</b><br/>'
+                        series: [{
+                            name: 'Body Temperature',
+                            type: 'column',
+                            yAxis: 1,
+                            data: temperatureAverage,
+                            color: 'rgba(255,155,0,0.3)',
+                            zIndex:4,
+                            tooltip: {
+                                pointFormat: '<span style="font-weight: bold; color: rgba(255,155,0,1)">{series.name}</span>: <b>{point.y:.1f} °C</b><br/>'
+                            }
+                            , borderWidth: 0
+                            /*, pointPadding: 0
+                            , groupPadding: 0*/
                         }
-                        , borderWidth: 0
-                        /*, pointPadding: 0
-                        , groupPadding: 0*/
-                    }
-                    , {
-                        name: 'Heart Beat Average',
-                        type: 'areaspline',
-                        data: heartBeatAverage,
-                        tooltip: {
-                            pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y} bpm</b><br/>'
+                        , {
+                            name: 'Heart Beat Average',
+                            type: 'areaspline',
+                            data: heartBeatAverage,
+                            tooltip: {
+                                pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y} bpm</b><br/>'
+                            }
+                            ,lineWidth: 3
+                            ,zoneAxis: 'y'
+                            ,zones: stressZone
+                            ,color:'#19566b'
+                            ,fillColor:'rgba(81,185,254,0.5)'
                         }
-                        ,lineWidth: 3
-                        ,zoneAxis: 'y'
-                        ,zones: stressZone
-                        ,color:'#19566b'
-                        ,fillColor:'rgba(81,185,254,0.5)'
-                    }
-                    , {
-                        name: 'Heart Beat Min-Max',
-                        type: 'errorbar',
-                        data: heartBeatRange,
-                        tooltip: {
-                            pointFormat: '(Min-Max: {point.low}-{point.high} bpm)<br/>'
+                        , {
+                            name: 'Heart Beat Min-Max',
+                            type: 'errorbar',
+                            data: heartBeatRange,
+                            tooltip: {
+                                pointFormat: '(Min-Max: {point.low}-{point.high} bpm)<br/>'
+                            }
                         }
-                    }
-                    ,{
-                        name: 'Galvanic Skin Response (GSR)',
-                        type: 'line',
-                        yAxis: 2,
-                        data: gsrAverage,
-                        color: 'rgba(212,124,247,0.8)',
-                        tooltip: {
-                            pointFormat: '<span style="font-weight: bold; color: rgba(212,124,247,1)">{series.name}</span>: <b>{point.y:.1f} Ω</b><br/><b>DateTime:</b>{point.dateTime} for {point.timespan} seconds.'
-                        }
-                        ,lineWidth: 2
-                        ,dashStyle: 'ShortDash'
-                    }]
+                        ,{
+                            name: 'Galvanic Skin Response (GSR)',
+                            type: 'line',
+                            yAxis: 2,
+                            data: gsrAverage,
+                            color: 'rgba(212,124,247,0.8)',
+                            tooltip: {
+                                pointFormat: '<span style="font-weight: bold; color: rgba(212,124,247,1)">{series.name}</span>: <b>{point.y:.1f} Ω</b><br/><b>DateTime:</b>{point.dateTime} for {point.timespan} seconds.'
+                            }
+                            ,lineWidth: 2
+                            ,dashStyle: 'ShortDash'
+                        }]
+                    });
+
+
                 });
 
-          
-        });
-    </script>
-}
+
+
+
+         
+
+        </script>
+        }
 
