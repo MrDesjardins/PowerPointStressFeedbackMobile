@@ -184,6 +184,14 @@ namespace PowerPointStressFeedbackWeb.Controllers
                 //For each slide, we collect all the Band data to get Min, Average, Max
                 var item = new MergedDataItem();
                 item.SlideIndex = pointData.SlideIndex;
+                if (powerpointIndex+1 >= powerPointData.Count)
+                {
+                    item.SecondsOnSlide = 0;
+                }
+                else
+                {
+                    item.SecondsOnSlide = (powerPointData[powerpointIndex + 1].DateTime - pointData.DateTime).Seconds;
+                }
                 item.Time = pointData.DateTime;
                 var count = 0;
                 var sumHeartBeat = 0;
@@ -275,6 +283,8 @@ namespace PowerPointStressFeedbackWeb.Controllers
         public double Temperature { get; set; }
 
         public int GsrAverage { get; set; }
+
+        public int SecondsOnSlide { get; set; }
 
         public MergedDataItem()
         {

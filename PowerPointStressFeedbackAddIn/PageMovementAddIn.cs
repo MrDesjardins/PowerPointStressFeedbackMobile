@@ -86,7 +86,7 @@ namespace PowerPointStressFeedbackAddIn
         private void OnSlideShowBegin(PowerPoint.SlideShowWindow wn)
         {
             System.Diagnostics.Debug.WriteLine("OnSlideShowBegin :" + DateTime.Now + ":" + wn.View.Slide.SlideNumber);
-            SendData(wn.View.Slide.SlideNumber);
+            //SendData(wn.View.Slide.SlideNumber);
         }
 
 
