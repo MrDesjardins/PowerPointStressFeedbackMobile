@@ -1,102 +1,131 @@
 ﻿
 @font-face {
-    font-family:"Oswald";
-    src: url("../fonts/Oswald-Regular.ttf") /* TTF file for CSS3 browsers */
+    font-family: "Oswald";
+    src: url("../fonts/Oswald-Regular.ttf"); /* TTF file for CSS3 browsers */
 }
-     body{
-         background-color: #dedede;
-         font-family: 'Oswald', sans-serif;
-         margin-bottom:200px;
-         }
-    .box{
-        padding: 10px; 
-        border: 1px solid #778899; 
-        border-radius: 7px;   
-        width: 160px;
-        height: 160px;
-        float:left;
-        margin:20px;
-        box-shadow: black 2px 2px 6px;
-        transition: 500ms all;
-        }
-    .box-left:hover{
-        transform: perspective( 600px ) rotateY( 45deg ) scale(1.1 );
-                   }
-    .box-center:hover{
-        transform: perspective( 600px ) scale(1.1 );
-                     }
-    .box-right:hover{
-        transform: perspective( 600px ) rotateY( -45deg ) scale(1.1 );
-                    }
 
-    #container-box-temperature  .box-left:hover{
-        transform: perspective( 600px ) rotateX( 25deg ) rotateY( 25deg ) scale(1.1 ); 
-                                               }
-    #container-box-temperature  .box-right:hover{
-        transform: perspective( 600px ) rotateX( 25deg ) rotateY( -25deg ) scale(1.1 ); 
-                                                }
+body {
+    background-color: #f8ffed;
+    font-family: 'Oswald', sans-serif;
+    margin-bottom: 200px;
+}
 
-    #info-container  .box-left:hover{
-        transform: perspective( 600px ) rotateX( -25deg ) rotateY( 25deg ) scale(1.1 ); 
-                                    }
-    #info-container .box-right:hover{
-        transform: perspective( 600px ) rotateX( -25deg ) rotateY( -25deg ) scale(1.1 ); 
-                                    }
+h1 {
+    color: #397138;
+    text-shadow: #332f2f 1px 1px 1px;
+    font-size: 40px;
+    display:inline;
+}
+
+h2 {
+    display:inline;
+    margin-left: 20px;
+    color: #c2e6c2;
+    text-shadow: #425848 1px 1px 1px;
+    letter-spacing: 1px;
+}
+
+.box {
+    padding: 10px;
+    border: 1px solid #778899;
+    border-radius: 7px;
+    width: 160px;
+    height: 160px;
+    float: left;
+    margin: 20px;
+    box-shadow: black 2px 2px 6px;
+    transition: 500ms all;
+}
+
+.box-left:hover {
+    transform: perspective( 600px ) rotateY( 45deg ) scale(1.1 );
+}
+
+.box-center:hover {
+    transform: perspective( 600px ) scale(1.1 );
+}
+
+.box-right:hover {
+    transform: perspective( 600px ) rotateY( -45deg ) scale(1.1 );
+}
+
+#container-box-temperature .box-left:hover {
+    transform: perspective( 600px ) rotateX( 25deg ) rotateY( 25deg ) scale(1.1 );
+}
+
+#container-box-temperature .box-right:hover {
+    transform: perspective( 600px ) rotateX( 25deg ) rotateY( -25deg ) scale(1.1 );
+}
+
+#info-container .box-left:hover {
+    transform: perspective( 600px ) rotateX( -25deg ) rotateY( 25deg ) scale(1.1 );
+}
+
+#info-container .box-right:hover {
+    transform: perspective( 600px ) rotateX( -25deg ) rotateY( -25deg ) scale(1.1 );
+}
 
 
-    .container-box>header{
-        font-size:24px;
-                         }
+.container-box > header {
+    font-size: 24px;
+}
 
-    .box>header{
-        font-size:18px;
-               }
+.box > header {
+    font-size: 18px;
+}
 
-    .container-box{
+.container-box {
+}
 
-                  }
     .container-box:after {
         content: "";
         display: table;
         clear: both;
-                         }
+    }
 
-    .box-value{
-        font-size: 58px;
-        display: inline-block;
-        text-shadow: white 1px 1px 1px;
-              }
+.box-value {
+    font-size: 58px;
+    display: inline-block;
+    text-shadow: white 1px 1px 1px;
+}
 
-    #container-box-temperature .box-value{
-        font-size:50px
+#container-box-temperature .box-value {
+    font-size: 50px;
+}
 
-                                         }
+.box-value-unit {
+    margin: 20px;
+    text-align: center;
+}
 
-    .box-value-unit{
-        margin: 20px;
-        text-align: center;
-                   }
+#all-containers {
+    margin: 0 auto;
+    width: 700px;
+}
 
-    #all-containers{
-        margin:0 auto;
-        width:700px;
-                   }
+.unit {
+    font-size: 18px;
+    vertical-align: top;
+    margin-top: 18px;
+}
 
-    .unit{
-        font-size:18px;
-        vertical-align: top;
-        margin-top: 18px;
-         }
-    header i{
-        font-size: 20px;
-        width: 20px;
-        height: 20px;
-        display: inline-block;
-        margin-left:10px;
-            }
-    #container-box-temperature{
-        color: #755017;
-                              }
+header i {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    margin-left: 10px;
+}
 
-    #container-box-heartbeat{
-        color:#a50b0b;
+#container-box-temperature {
+    color: #755017;
+}
+
+#container-box-heartbeat {
+    color: #a50b0b;
+}
+
+.highcharts-title {
+    color: #c2e6c2 !important;
+    text-shadow: #50b96c 1px 1px 1px !important;
+}

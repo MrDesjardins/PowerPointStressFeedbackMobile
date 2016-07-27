@@ -1,5 +1,9 @@
 ﻿@using Newtonsoft.Json
 @model PowerPointStressFeedbackWeb.Controllers.MergedData
+@{
+    var stressLevel1 = 15;
+    var stressLevel2 = 25;
+}
 
 @if (Model == null)
 {
@@ -10,7 +14,7 @@ else
     <h1>Power Point Stress Feedback</h1>
     <h2>Data from session id : @Model.SessionId</h2>
 
-    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    <div id="container" style="min-width: 500px; height: 400px; margin: 0 auto"></div>
     <div id="all-containers">
         <div id="info-container" class="container-box">
             <header>Graphic Threshold<i class="fa fa-bar-chart" style="color:navy" aria-hidden="true"></i></header>
@@ -21,13 +25,13 @@ else
                 </div>
             </div>
                 <div class="box box-center" style="background-color:#f5d5d5">
-                    <header>Small stress (10%)</header>
+                    <header>Small stress (@(stressLevel1)%)</header>
                     <div class="box-value-unit" style="color: #ff9999">
                         <div id="stress1-heartbeat" class="box-value anim" ></div><i class="fa fa-heart unit" aria-hidden="true"></i>
                     </div>
                 </div>
                 <div class="box box-right" style="background-color:#ffa0a0">
-                    <header>Higher stress (20%)</header>
+                    <header>Higher stress (@(stressLevel2)%)</header>
                     <div class="box-value-unit"  style="color: #f20f0f">
                         <div id="stress2-heartbeat" class="box-value anim"></div><i class="fa fa-heart unit" aria-hidden="true"></i>
                     </div>
@@ -98,8 +102,8 @@ else
                     var gsrAverage = [];
                     var slides = [];
                     var stressZone = [];
-                    var lowStress = relaxedHeartBeat * 1.1;
-                    var highStress = relaxedHeartBeat * 1.2;
+                    var lowStress = relaxedHeartBeat * ( 1 + @stressLevel1/100) ;
+                    var highStress = relaxedHeartBeat * ( 1 + @stressLevel2/100);
                     for(var i=0;i<data.length;i++)
                     {
                         slides.push(data[i].SlideIndex);
@@ -123,15 +127,15 @@ else
                     }
                     //stressZone.push({value:8000, fillColor:'#51B9FE'});
                     //$('#relax-heartbeat').text((relaxedHeartBeat).toFixed());
-                    $('#stress1-heartbeat').text((relaxedHeartBeat*1.1).toFixed());
-                    $('#stress2-heartbeat').text((relaxedHeartBeat*1.2).toFixed());
+                    $('#stress1-heartbeat').text((relaxedHeartBeat*( 1 + @stressLevel1/100)).toFixed());
+                    $('#stress2-heartbeat').text((relaxedHeartBeat*( 1 + @stressLevel2/100)).toFixed());
                     //http://api.highcharts.com/highcharts#tooltip
                     $('#container').highcharts({
-                      
+
                         chart: {
                             zoomType: 'xy',
                             alignTicks: true,
-                            backgroundColor: '#dedede',  
+                            backgroundColor: '#f8ffed',
                             events:{
                                 load:function()
                                 {
@@ -284,7 +288,7 @@ else
 
 
 
-         
+
 
         </script>
         }
